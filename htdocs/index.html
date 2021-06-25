@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+<title>toyhttpd</title>
+</head>
+<body>
+    <h2>
+        toyhttpd demo
+    </h2>
+    <p>
+        <h3>简介</h3>
+        服务器结构仿照tinyhttpd，改用C++实现，并加入了多线程处理每个请求。<br>
+        相比toyhttpd，支持的更多文件类型，并且可以通过增加MIME类型字典加入更多类型：
+        <ul>
+            <li>text: html, txt, css, javascript</li>
+            <li>image: png, jpg, gif</li>
+        </ul>
+
+        <h3>demo</h3>
+        <ul>
+            <li><a href="jpg.jpg">jpg</a></li>
+            <li><a href="gif.gif">gif</a></li>
+            <li><a href="bigfile">较大文件，以text/plain传输</a></li>
+            <li><a href="txt.txt">txt</a></li>
+            <li><a href="notfount">404</a></li>
+        </ul>
+        <h3>编译</h3>
+        直接编译运行：
+        <ul>
+            <li>安装g++，make</li>
+            <li>make</li>
+            <li>export PORT=端口号</li>
+            <li>./toyhttpd</li>
+        </ul>
+        有docker：
+        <ul>
+            <li>docker build -t mytag .</li>
+            <li>docker run -p 12000:12000 -v $(pwd)/hrdocs:/http/htdocs -v $(pwd)/default:/http/default mytag</li>
+        </ul>
+    </p>
+</body>

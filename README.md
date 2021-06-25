@@ -1,1 +1,1 @@
-# cpp-toyhttpd
+仿照[tinyhttpd](https://github.com/cbsheng/tinyhttpd)，用C++改写的静态http服务器，支持多线程

@@ -1,0 +1,13 @@
+version: "3"
+services: 
+    toyhttpd:
+        build: 
+            context: .
+            dockerfile: ./Dockerfile
+        container_name: toyhttpd
+        ports: 
+            - "12000:12000"
+        volumes: 
+            - ./htdocs:/http/htdocs
+            - ./default:/http/default
+        #restart: always
