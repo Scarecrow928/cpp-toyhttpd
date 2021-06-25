@@ -1,4 +1,4 @@
-CXX = g++
+CXX=g++
 CXXFLAGS=-g -std=c++17 -Wall
 BIN=toyhttpd
 
@@ -12,7 +12,6 @@ toyhttpd: main.cpp toyserver.cpp toyserver.h
 		response.h response.cpp \
 		myutil.h myutil.cpp
 		
-
 debug: DEBUG = -DDEBUG
 
 debug: all

@@ -10,7 +10,7 @@
     <p>
         <h3>简介</h3>
         服务器结构仿照tinyhttpd，改用C++实现，并加入了多线程处理每个请求。<br>
-        相比toyhttpd，支持的更多文件类型，并且可以通过增加MIME类型字典加入更多类型：
+        相比tinyhttpd，支持的更多文件类型，并且可以通过增加MIME类型字典加入更多类型：
         <ul>
             <li>text: html, txt, css, javascript</li>
             <li>image: png, jpg, gif</li>
@@ -35,7 +35,7 @@
         有docker：
         <ul>
             <li>docker build -t mytag .</li>
-            <li>docker run -p 12000:12000 -v $(pwd)/hrdocs:/http/htdocs -v $(pwd)/default:/http/default mytag</li>
+            <li>docker run -p 12000:12000 -v $(pwd)/htdocs:/http/htdocs -v $(pwd)/default:/http/default mytag</li>
         </ul>
     </p>
 </body>
