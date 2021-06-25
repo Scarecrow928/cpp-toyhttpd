@@ -13,4 +13,6 @@
 - `docker run -p 12000:12000 -v $(pwd)/htdocs:/http/htdocs -v $(pwd)/default:/http/default mytag`
 
 ### demo
-[link](https://cn1.scarecrow928.com:10443/toyhttpd/)
+[有反向代理](https://cn1.scarecrow928.com:10443/toyhttpd/)
+
+[直连](http://us1.scarecrow928.com:12000)
