@@ -2,10 +2,6 @@
 
 RequestHandler::RequestHandler(int client) {
     this->client = client;
-
-    // 有些请求较慢，为防止recv阻塞，设置超时
-    struct timeval tv = {0, 10000};
-    setsockopt(client, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
 }
 
 RequestHandler::~RequestHandler() {
@@ -21,6 +17,12 @@ void RequestHandler::read_request() {
     while ((n = recv(client, buf, READ_SIZE - 1, 0)) > 0) {
         buf[n] = '\0';
         row_req += string(buf);
+        size_t len_row_seq = row_req.size();
+        if (len_row_seq > 4 && row_req[len_row_seq - 1] == '\n' && \
+            row_req[len_row_seq - 2] == '\r' && \
+            row_req[len_row_seq - 3] == '\n' && \
+            row_req[len_row_seq - 4] == '\r')
+            break;
     }
 #ifdef DEBUG
     printf("request text: \n%s\nrequest size: %lu\n", row_req.data(), row_req.size());

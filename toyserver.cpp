@@ -23,6 +23,7 @@ ToyServer::ToyServer()
 
 ToyServer::~ToyServer()
 {
+    shutdown(httpd, SHUT_RDWR);
 }
 
 void ToyServer::bind_and_listen(const string &address, uint16_t port)
@@ -33,17 +34,8 @@ void ToyServer::bind_and_listen(const string &address, uint16_t port)
     struct sockaddr_in listen_addr;
     listen_addr.sin_family = AF_INET;
 
-    // IP字符串转化为4字节uint32_t
-    uint32_t ip = MyUtil::string_to_addr(address);
-#ifdef DEBUG
-    printf("listen ip: %u\n", ip);
-#endif
-    listen_addr.sin_addr.s_addr = ip;
-
-    if (port < 0 || port > 65535) {
-        printf("port number error\n");
-        exit(1);
-    }
+    // IP字符串，端口转化为网络格式，也就是大端模式
+    inet_pton(AF_INET, address.data(), &listen_addr.sin_addr.s_addr);
     listen_addr.sin_port = htons(port);
     
     // 地址、端口绑定
@@ -66,8 +58,11 @@ void ToyServer::startup() {
         uint32_t len = sizeof(client_addr);
         fflush(stdout);
         int client = accept(httpd, (struct sockaddr *)&client_addr, &len);
+        
 #ifdef DEBUG
-        string ip = MyUtil::addr_to_string(client_addr.sin_addr.s_addr);
+    char buf[20];
+        inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, buf, 20);
+        string ip = string(buf);
         uint16_t port = ntohs(client_addr.sin_port);
         printf("accept: %s:%d\n", ip.data(), port);
 #endif

@@ -31,27 +31,3 @@ string MyUtil::get_date() {
         date_str.pop_back();
     return date_str;
 }
-
-string MyUtil::addr_to_string(uint32_t addr) {
-    string ip;
-    uint8_t *b = (uint8_t *)&addr;
-    for (int i = 0; i < 4; i++)
-        ip += to_string(b[i]) + ".";
-    ip.pop_back();
-    return ip;
-}
-
-uint32_t MyUtil::string_to_addr(const string &ip) {
-    uint32_t addr = 0;
-    for (int i = 24, j = 0; i >= 0; i -= 8) {
-        int k = ip.find_first_of('.', j);
-        uint32_t a = stoul(ip.substr(j, k));
-        if (a < 0 || a > 255) {
-            printf("address error: %s\n", ip.data());
-            return 0;
-        }
-        addr |= (a << i);
-        j = k + 1;
-    }
-    return addr;
-}
