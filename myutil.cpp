@@ -15,7 +15,9 @@ unordered_map<string, string> MyUtil::MIME_DICT = {
     {"png", "image/png"},
     {"jpg", "image/jpg"},
     {"jpeg", "image/jpg"},
-    {"gif", "image/gif"}
+    {"gif", "image/gif"},
+    {"json", "application/json"},
+    {"unknown", "application/octet-stream"}
 };
 
 string MyUtil::get_date(const string &format) {

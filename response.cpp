@@ -1,7 +1,7 @@
 #include "response.h"
 
 Response::Response(int code) {
-    this->code = code;
+    set_code(code);
 }
 
 void Response::add_header_option(const string &key, const string &value) {
@@ -48,7 +48,7 @@ string Response::serve_file(const string &file_) {
     size_t dot = file.find_last_of(".");
     string file_extension;
     if (dot == string::npos) {
-        file_extension = "txt";
+        file_extension = "unknown";
     } else {
         file_extension = file.substr(dot + 1);
     }
