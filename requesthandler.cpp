@@ -13,7 +13,6 @@ void RequestHandler::read_request() {
     int n;
     char buf[READ_SIZE];
     string row_req;
-    fflush(stdout);
     while ((n = recv(client, buf, READ_SIZE - 1, 0)) > 0) {
         buf[n] = '\0';
         row_req += string(buf);
@@ -47,7 +46,6 @@ void RequestHandler::response() {
 #ifdef DEBUG
     printf("ready to send header:\n%s", header.data());
 #endif
-    fflush(stdout);
     send(client, header.data(), header.size(), 0);
 
     // 发送内容
@@ -56,11 +54,9 @@ void RequestHandler::response() {
     string serve_file_name = res.get_file();
 #ifdef DEBUG
     printf("ready to send file: %s\n", serve_file_name.data());
-    fflush(stdout);
     size_t read_count = 0, send_count = 0;
 #endif
     FILE *pf = fopen(serve_file_name.data(), "rb");
-    fflush(stdout);
     while ((n = fread(buf, sizeof(char), READ_SIZE, pf)) > 0) {
 #ifdef DEBUG
         read_count += n;
@@ -81,6 +77,5 @@ void RequestHandler::response() {
 #ifdef DEBUG
     printf("close client connection\n");
 #endif
-    fflush(stdout);
 }
 

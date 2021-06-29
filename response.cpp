@@ -78,7 +78,7 @@ string Response::get_file() {
 
 string Response::get_header() {
     // 准备回复了，加个时间戳
-    add_header_option("Date", MyUtil::get_date());
+    add_header_option("Date", MyUtil::get_date("+%a, %d %b %Y %T GMT"));
     string header = "HTTP/1.1 " + to_string(code) + " " + MyUtil::STATUS_CODE[code] + "\r\n";
     for (auto it : res_header_options)
         header += it.first + ": " + it.second + "\r\n";

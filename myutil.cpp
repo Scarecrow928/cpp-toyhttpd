@@ -18,10 +18,10 @@ unordered_map<string, string> MyUtil::MIME_DICT = {
     {"gif", "image/gif"}
 };
 
-string MyUtil::get_date() {
+string MyUtil::get_date(const string &format) {
     // C中没有特别好的库获取当前时间，用date命令加管道获取
     char str[128];
-    const string cmdstring = "date -u \'+%a, %d %b %Y %T GMT\'";
+    const string cmdstring = "date -u \'" + format + "\'";
     FILE *f = popen(cmdstring.data(), "r");
     int n = fread(str, sizeof(char), 127, f);
     pclose(f);

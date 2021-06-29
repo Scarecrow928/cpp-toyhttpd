@@ -12,7 +12,6 @@ void *thread_task(void *arg) {
     rh.response();
 #ifdef DEBUG
     printf("thread exit\n");
-    fflush(stdout);
 #endif
     pthread_exit(NULL);
 }
@@ -56,16 +55,16 @@ void ToyServer::startup() {
     while (true) {
         struct sockaddr_in client_addr;
         uint32_t len = sizeof(client_addr);
-        fflush(stdout);
         int client = accept(httpd, (struct sockaddr *)&client_addr, &len);
         
-#ifdef DEBUG
-    char buf[20];
+        // 打印客户端信息
+        char buf[20];
         inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, buf, 20);
         string ip = string(buf);
         uint16_t port = ntohs(client_addr.sin_port);
-        printf("accept: %s:%d\n", ip.data(), port);
-#endif
+        printf("%s accept: %s:%d\n", MyUtil::get_date("+%F %T").data(), ip.data(), port);
+        fflush(stdout);
+        // 启动线程处理
         handle_request(client);
     }
 }
@@ -73,5 +72,7 @@ void ToyServer::startup() {
 void ToyServer::handle_request(int client) {
     int *fd = new int(client);
     pthread_t pid;
+
+    // 仅向线程告知客户端fd
     pthread_create(&pid, NULL, thread_task, fd);
 }
