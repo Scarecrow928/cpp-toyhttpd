@@ -12,17 +12,17 @@
         服务器结构仿照tinyhttpd，改用C++实现，并加入了多线程处理每个请求。<br>
         相比tinyhttpd，支持的更多文件类型，并且可以通过增加MIME类型字典加入更多类型：
         <ul>
-            <li>text: html, txt, css, javascript</li>
-            <li>image: png, jpg, gif</li>
+            <li>text: html, txt, css, javascript, json等等</li>
+            <li>image: png, jpg, gif等等</li>
         </ul>
         <a href="https://github.com/Scarecrow928/cpp-toyhttpd">代码</a><br>
 
         <h3>demo</h3>
         <ul>
-            <li><a href="jpg.jpg">jpg</a></li>
-            <li><a href="gif.gif">gif</a></li>
-            <li><a href="txt.txt">txt</a></li>
-            <li><a href="docker-compose">较大文件，以text/plain传输</a></li>
+            <li><a href="jpg.jpg">imagejpeg</a></li>
+            <li><a href="gif.gif">image/gif</a></li>
+            <li><a href="txt.txt">text/plain</a></li>
+            <li><a href="docker-compose">较大二进制文件，以application/octet-stream传输</a></li>
             <li><a href="dir/">目录，自动寻找index.html</a></li>
             <li><a href="notfount">404</a></li>
         </ul>
@@ -34,7 +34,7 @@
             <li>export PORT=端口号</li>
             <li>./toyhttpd</li>
         </ul>
-        有docker：
+        用docker：
         <ul>
             <li>docker build -t mytag .</li>
             <li>docker run -p 12000:12000 -v $(pwd)/htdocs:/http/htdocs -v $(pwd)/default:/http/default mytag</li>
