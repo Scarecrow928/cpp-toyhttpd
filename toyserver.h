@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <pthread.h>
+#include <boost/asio/thread_pool.hpp>
+#include <boost/asio/post.hpp>
 
 #include "requesthandler.h"
 
@@ -17,6 +18,7 @@ void *thread_task(void *arg);
 class ToyServer{
 private:
     int httpd;
+    boost::asio::thread_pool pool;
 
 public:
     ToyServer();

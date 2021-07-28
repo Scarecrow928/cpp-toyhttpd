@@ -3,10 +3,8 @@
 using namespace std;
 #define BACKLOG 1024
 
-void *thread_task(void *arg) {
-    int *fd = (int *)arg;
-    RequestHandler rh(*fd);
-    delete fd;
+void *thread_task(int clientfd) {
+    RequestHandler rh(clientfd);
     rh.read_request();
     rh.process_request();
     rh.response();
@@ -16,7 +14,7 @@ void *thread_task(void *arg) {
     pthread_exit(NULL);
 }
 
-ToyServer::ToyServer()
+ToyServer::ToyServer() : pool(10000)
 {
 }
 
@@ -70,9 +68,7 @@ void ToyServer::startup() {
 }
 
 void ToyServer::handle_request(int client) {
-    int *fd = new int(client);
-    pthread_t pid;
-
-    // 仅向线程告知客户端fd
-    pthread_create(&pid, NULL, thread_task, fd);
+    boost::asio::post(pool, [client]() {
+        thread_task(client);
+    });
 }

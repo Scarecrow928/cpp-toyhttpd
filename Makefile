@@ -2,6 +2,8 @@ CXX=g++
 CXXFLAGS=-g -std=c++17 -Wall -I.
 DIR=build
 BIN=toyhttpd
+LBOOST=-lboost_system
+LPTHREAD=-pthread
 
 all: directories $(BIN) 
 
@@ -25,7 +27,7 @@ $(DIR)/main.o: main.cpp
 
 $(BIN): $(DIR)/main.o $(DIR)/toyserver.o $(DIR)/requesthandler.o \
 				$(DIR)/response.o $(DIR)/myutil.o $(DIR)/request.o
-	$(CXX) $(CXXFLAGS) $(DEBUG) -pthread -o $(BIN) $(DIR)/main.o \
+	$(CXX) $(CXXFLAGS) $(DEBUG) $(LBOOST) $(LPTHREAD) -o $(BIN) $(DIR)/main.o \
 		$(DIR)/toyserver.o $(DIR)/requesthandler.o $(DIR)/response.o \
 		$(DIR)/myutil.o $(DIR)/request.o
 
