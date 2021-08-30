@@ -60,7 +60,7 @@ void ToyServer::startup() {
         inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, buf, 20);
         string ip = string(buf);
         uint16_t port = ntohs(client_addr.sin_port);
-        printf("%s accept: %s:%d\n", MyUtil::get_date("+%F %T").data(), ip.data(), port);
+        printf("%s accept: %s:%d\n", MyUtil::get_date("%F %T", false).data(), ip.data(), port);
         fflush(stdout);
         // 启动线程处理
         handle_request(client);
