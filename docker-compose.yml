@@ -1,0 +1,11 @@
+version: "3"
+services: 
+  myhttpd:
+    image: myhttpd:0.1
+    build: .
+    container_name: myhttpd
+    ports: 
+      - "12000:12000"
+    volumes: 
+      - ./html:/var/www/html
+    #restart: always
