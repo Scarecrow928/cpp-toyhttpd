@@ -35,14 +35,15 @@ public:
         {}
     } Context;
 
-    HttpServer(const std::string _address = "0.0.0.0", uint16_t _port = 12000);
+    HttpServer(const std::string _address = "0.0.0.0", uint16_t _port = 12000, int max_events = 1024);
     ~HttpServer();
     void startup();
 
 private:
     int listenfd, epollfd;
     boost::asio::thread_pool thread_pool;
-    static const int MAX_EVENTS = 1024, READ_SIZE = 8192, WRITE_SIZE = 8192;
+    const int MAX_EVENTS;
+    static const int READ_SIZE = 8192, WRITE_SIZE = 8192;
 
     void generate_default_page();
 };

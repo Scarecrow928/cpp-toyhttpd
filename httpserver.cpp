@@ -1,8 +1,9 @@
 #include "httpserver.h"
 
-HttpServer::HttpServer(const std::string _address, uint16_t _port) :
+HttpServer::HttpServer(const std::string _address, uint16_t _port, int max_events) :
     address(_address),
     port(_port),
+    MAX_EVENTS(max_events),
     thread_pool(5000)
 {
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
