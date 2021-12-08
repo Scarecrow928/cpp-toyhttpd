@@ -34,7 +34,9 @@ HttpServer::~HttpServer()
 
 void HttpServer::startup()
 {
-    printf("start server at %s:%u", address.data(), port);
+    generate_default_page();
+    printf("Start HttpServer at %s:%u", address.data(), port);
+    fflush(stdout);
     epollfd = epoll_create(MAX_EVENTS);
     if (epollfd == -1) {
         perror("epoll_create");
@@ -75,7 +77,7 @@ void HttpServer::startup()
                 fflush(stdout);
 
                 ev.events = EPOLLIN | EPOLLET;
-                ev.data.ptr = (void *)new Context(ip, port, conn_sock, epollfd);
+                ev.data.ptr = (void *)new Context(ip, port, conn_sock, epollfd, this);
                 if (epoll_ctl(epollfd, EPOLL_CTL_ADD, conn_sock, &ev) == -1) {
                     perror("epoll_ctl: conn_sock");
                     exit(EXIT_FAILURE);
@@ -93,13 +95,15 @@ void HttpServer::startup()
                     }
                     if (row_request.size() == 0) {
                         // 连接关闭
+                        printf("close: %s:%u\n", ctx->ip.data(), ctx->port);
+                        fflush(stdout);
                         close(ctx->fd);
                         delete ctx;
                     } else {
                         // 处理请求
                         Request request(row_request);
-                        std::string path = "htdocs/error.html";
-                        request.path = "htdocs/" + request.path;
+                        std::string path = ctx->server->web_root + "error.html";
+                        request.path = ctx->server->web_root + request.path;
                         int code;
                         if (request.valid) {
                             struct stat file_stat;
@@ -164,4 +168,24 @@ void HttpServer::startup()
             delete (Context *)e.data.ptr;
     }
     close(epollfd);
+}
+
+void HttpServer::generate_default_page()
+{
+    struct stat file_stat;
+    std::string error_page = web_root + "error.html", index_page = web_root + "index.html";
+    if (0 != stat(error_page.data(), &file_stat)) {
+        int new_file = open(error_page.data(), O_RDWR | O_CREAT, 0644);
+        if (new_file != -1)
+            close(new_file);
+        else
+            perror("open");
+    }
+    if (0 != stat(index_page.data(), &file_stat)) {
+        int new_file = open(index_page.data(), O_RDWR | O_CREAT, 0644);
+        if (new_file != -1)
+            close(new_file);
+        else
+            perror("open");
+    }
 }

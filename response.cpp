@@ -65,7 +65,7 @@ void Response::init_options()
 {
     options["Server"] = "myhttpd";
     options["Cache-Control"] = "no-cache";
-    options["Connection"] = "Keep-Alive";
+    options["Connection"] = "keep-alive";
 }
 
 void Response::guess_content_type()
@@ -83,7 +83,7 @@ void Response::init_content_length()
 {
     struct stat file_stat;
     if (0 != stat(path.data(), &file_stat))
-        throw std::runtime_error("stat");
+        throw std::runtime_error("stat: " + path);
     content_length = file_stat.st_size;
     options["Content-Length"] = std::to_string(content_length);
 
