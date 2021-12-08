@@ -83,7 +83,7 @@ void Response::init_content_length()
 {
     struct stat file_stat;
     if (0 != stat(path.data(), &file_stat))
-        throw std::runtime_error("stat: " + path);
+        throw std::runtime_error("stat: '" + path + "'");
     content_length = file_stat.st_size;
     options["Content-Length"] = std::to_string(content_length);
 

@@ -100,14 +100,6 @@ void HttpServer::startup()
                         close(ctx->fd);
                         delete ctx;
                     } else {
-                        // 改为监听客户端fd的可写
-                        struct epoll_event write_ev;
-                        write_ev.events = EPOLLOUT | EPOLLET;
-                        write_ev.data.ptr = (void *)ctx;
-                        if (epoll_ctl(ctx->epollfd, EPOLL_CTL_MOD, ctx->fd, &write_ev) == -1) {
-                            perror("epoll_ctl: read ctx->fd");
-                            exit(EXIT_FAILURE);
-                        }
                         // 处理请求
                         Request request(row_request);
                         std::string path = ctx->server->web_root + "error.html";
@@ -118,7 +110,7 @@ void HttpServer::startup()
                             if (0 != stat(request.path.data(), &file_stat)) {
                                 code = 404;
                             } else if (S_ISDIR(file_stat.st_mode)) {
-                                request.path += "/index.html";
+                                request.path += "index.html";
                                 if (0 != stat(request.path.data(), &file_stat)) {
                                     code = 404;
                                 } else {
@@ -134,6 +126,14 @@ void HttpServer::startup()
                         }
                         ctx->path = path;
                         ctx->code = code;
+                        // 改为监听客户端fd的可写
+                        struct epoll_event write_ev;
+                        write_ev.events = EPOLLOUT | EPOLLET;
+                        write_ev.data.ptr = (void *)ctx;
+                        if (epoll_ctl(ctx->epollfd, EPOLL_CTL_MOD, ctx->fd, &write_ev) == -1) {
+                            perror("epoll_ctl: read ctx->fd");
+                            exit(EXIT_FAILURE);
+                        }
                     }
                 });
             } else if (events[n].events == EPOLLOUT) {
