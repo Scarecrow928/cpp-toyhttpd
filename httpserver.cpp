@@ -110,7 +110,7 @@ void HttpServer::startup()
                             if (0 != stat(request.path.data(), &file_stat)) {
                                 code = 404;
                             } else if (S_ISDIR(file_stat.st_mode)) {
-                                request.path += "index.html";
+                                request.path += "/index.html";
                                 if (0 != stat(request.path.data(), &file_stat)) {
                                     code = 404;
                                 } else {
