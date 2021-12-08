@@ -3,7 +3,7 @@
 HttpServer::HttpServer(const std::string _address, uint16_t _port) :
     address(_address),
     port(_port),
-    thread_pool(10000)
+    thread_pool(5000)
 {
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -35,7 +35,7 @@ HttpServer::~HttpServer()
 void HttpServer::startup()
 {
     generate_default_page();
-    printf("Start HttpServer at %s:%u", address.data(), port);
+    printf("Start HttpServer at %s:%u\n", address.data(), port);
     fflush(stdout);
     epollfd = epoll_create(MAX_EVENTS);
     if (epollfd == -1) {
@@ -100,6 +100,14 @@ void HttpServer::startup()
                         close(ctx->fd);
                         delete ctx;
                     } else {
+                        // 改为监听客户端fd的可写
+                        struct epoll_event write_ev;
+                        write_ev.events = EPOLLOUT | EPOLLET;
+                        write_ev.data.ptr = (void *)ctx;
+                        if (epoll_ctl(ctx->epollfd, EPOLL_CTL_MOD, ctx->fd, &write_ev) == -1) {
+                            perror("epoll_ctl: read ctx->fd");
+                            exit(EXIT_FAILURE);
+                        }
                         // 处理请求
                         Request request(row_request);
                         std::string path = ctx->server->web_root + "error.html";
@@ -126,31 +134,12 @@ void HttpServer::startup()
                         }
                         ctx->path = path;
                         ctx->code = code;
-
-                        // 改为监听客户端fd的可写
-                        struct epoll_event write_ev;
-                        write_ev.events = EPOLLOUT | EPOLLET;
-                        write_ev.data.ptr = (void *)ctx;
-                        if (epoll_ctl(ctx->epollfd, EPOLL_CTL_MOD, ctx->fd, &write_ev) == -1) {
-                            perror("epoll_ctl: read ctx->fd");
-                            exit(EXIT_FAILURE);
-                        }
                     }
                 });
             } else if (events[n].events == EPOLLOUT) {
                 // fd可写
                 Context *ctx = (Context *)events[n].data.ptr;
                 boost::asio::post(thread_pool, [ctx]() {
-                    Response response(ctx->path, ctx->code);
-                    char buf[WRITE_SIZE];
-                    size_t n;
-                    while ((n = response.next(buf, READ_SIZE)) > 0) {
-                        if (-1 == (n = send(ctx->fd, buf, n, 0))) {
-                            perror("send");
-                            break;
-                        }
-                    }
-
                     // 改为监听客户端fd可读
                     struct epoll_event write_ev;
                     write_ev.events = EPOLLIN | EPOLLET;
@@ -158,6 +147,24 @@ void HttpServer::startup()
                     if (epoll_ctl(ctx->epollfd, EPOLL_CTL_MOD, ctx->fd, &write_ev) == -1) {
                         perror("epoll_ctl: write ctx->fd");
                         exit(EXIT_FAILURE);
+                    }
+                    Response response(ctx->path, ctx->code);
+                    char buf[WRITE_SIZE];
+                    int n_read;
+                    while ((n_read = response.next(buf, READ_SIZE)) > 0) {
+                        int n_send, idx_send = 0;
+                        while (idx_send < n_read) {
+                            n_send = send(ctx->fd, buf + idx_send, n_read - idx_send, 0);
+                            while (n_send == -1 && errno == EAGAIN) {
+                                usleep(200000);
+                                n_send = send(ctx->fd, buf + idx_send, n_read - idx_send, 0);
+                            }
+                            if (n_send == -1) {
+                                perror("send");
+                                return;
+                            }
+                            idx_send += n_send;
+                        }
                     }
                 });
             }

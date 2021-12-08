@@ -2,7 +2,6 @@
 #define HTTPSERVER_H
 
 #include <string>
-
 #include <cstdio>
 #include <sys/socket.h>
 #include <unistd.h>
