@@ -13,12 +13,13 @@ std::map<std::string, std::string> Response::GUESS_CONTENT_TYPE = {
     {"html", "text/html"},
     {"htm", "text/html"},
     {"txt", "text/plain"},
-    {"js", "text/javascript"},
+    {"js", "application/javascript"},
     {"css", "text/css"},
     {"png", "image/png"},
     {"jpg", "image/jpg"},
     {"jpeg", "image/jpg"},
     {"gif", "image/gif"},
+    {"svg", "image/svg+xml"},
     {"json", "application/json"},
     {"unknown", "application/octet-stream"}
 };
