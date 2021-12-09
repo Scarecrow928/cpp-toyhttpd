@@ -20,3 +20,7 @@
 - native: `./myhttpd`
 - docker: `docker run -it -p 12000:12000 -v $(pwd)/html:/var/www/html <tag>`
 - docker-compose: `docker-compose up`
+
+### demo
+- [direct](http://cn2.scarecrow928.com:12000)
+- [behind reverse proxy](https://cn1.scarecrow928.com:10443/myhttpd)
