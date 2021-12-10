@@ -22,5 +22,5 @@
 - docker-compose: `docker-compose up`
 
 ### demo
-- [direct](http://cn2.scarecrow928.com:12000)
+- [direct](http://cn1.scarecrow928.com:12000)
 - [behind reverse proxy](https://cn1.scarecrow928.com:10443/myhttpd)
